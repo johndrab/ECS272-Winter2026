@@ -1,4 +1,7 @@
 import Example from './components/Example'
+import StarCoordinates from './components/StarCoordinates';
+import Example12 from './components/Example12'
+
 import Notes from './components/Notes'
 import { NotesWithReducer, CountProvider } from './components/NotesWithReducer';
 import Grid from '@mui/material/Grid';
@@ -6,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+
 
 // Adjust the color theme for material ui
 const theme = createTheme({
@@ -64,7 +68,7 @@ function Layout() {
         <Grid
           item
           xs={6}
-          sx={{ height: '100%' }}
+          sx={{ width: '40%', height: '95%' }}
         >
           <Grid
             container
@@ -72,19 +76,13 @@ function Layout() {
             sx={{ height: '100%' }}
           >
             {/* Top-right: Star Coordinates */}
-            <Grid
-              item
-              sx={{ height: '50%' }}
-            >
-              {/* <StarCoordinates /> */}
-              <Box sx={{ height: '100%' }}>
-                Star plot goes here
-              </Box>
+            <Grid item sx={{width: '100%', height: '50%' }}>
+              <StarCoordinates />
             </Grid>
 
-            {/* Bottom-right: Notes */}
-            
           </Grid>
+
+          
         </Grid>
       </Grid>
     </Box>

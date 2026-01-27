@@ -7,7 +7,7 @@ import { ComponentSize, Margin } from '../types';
 interface HeatmapDatum {
   country: string;
   year: string;
-  pressure: number;
+  fertility_rate: number;
 }
 
 export default function Example() {
@@ -26,7 +26,7 @@ export default function Example() {
         const csvData = await d3.csv('/data/population_growth.csv', d => ({
           country: d.country ?? '',
           year: d.year ?? '',
-          pressure: d.fertility_rate ? +d.fertility_rate : 0, 
+          fertility_rate: d.fertility_rate ? +d.fertility_rate : 0, 
 
           // pressure: d.population ? +d.population : 0,
 
@@ -51,7 +51,7 @@ export default function Example() {
 
   function initChart() {
     // Filter out invalid rows
-    const filteredData = data.filter(d => d.country && d.year && !isNaN(d.pressure));
+    const filteredData = data.filter(d => d.country && d.year && !isNaN(d.fertility_rate));
 
     // Use only first 10 countries/years for simplicity
     const years = Array.from(new Set(filteredData.map(d => d.year)));
@@ -72,8 +72,8 @@ export default function Example() {
       .range([margin.top, size.height - margin.bottom])
       .padding(0.05);
 
-    const pressureExtent = d3.extent(sliceData, d => d.pressure) as [number, number];
-    const colorScale = d3.scaleSequential(d3.interpolateYlOrRd).domain(pressureExtent);
+    const fertility_rateExtent = d3.extent(sliceData, d => d.fertility_rate) as [number, number];
+    const colorScale = d3.scaleSequential(d3.interpolateYlOrRd).domain(fertility_rateExtent);
 
     const svg = d3.select('#heatmap-svg');
 
@@ -87,7 +87,7 @@ export default function Example() {
       .attr('y', d => yScale(d.country)!)
       .attr('width', xScale.bandwidth())
       .attr('height', yScale.bandwidth())
-      .attr('fill', d => colorScale(d.pressure));
+      .attr('fill', d => colorScale(d.fertility_rate));
 
     // --- Axes ---
     svg.append('g')
@@ -107,7 +107,7 @@ export default function Example() {
       .attr('y', margin.top / 2)
       .attr('text-anchor', 'middle')
       .style('font-weight', 'bold')
-      .text('Global Population Pressure Index by Country and Year');
+      .text('Global Population Fertility Rate by Country and Year');
 
     svg.append('text')
       .attr('x', size.width / 2)
@@ -136,14 +136,14 @@ export default function Example() {
       .data(d3.ticks(0, 1, 10))
       .join('stop')
       .attr('offset', d => `${d * 100}%`)
-      .attr('stop-color', d => colorScale(pressureExtent[0] + d * (pressureExtent[1] - pressureExtent[0])));
+      .attr('stop-color', d => colorScale(fertility_rateExtent[0] + d * (fertility_rateExtent[1] - fertility_rateExtent[0])));
 
     legendG.append('rect')
       .attr('width', legendWidth)
       .attr('height', legendHeight)
       .style('fill', 'url(#legend-gradient)');
 
-    const legendScale = d3.scaleLinear().domain(pressureExtent).range([0, legendWidth]);
+    const legendScale = d3.scaleLinear().domain(fertility_rateExtent).range([0, legendWidth]);
     const legendAxis = d3.axisBottom(legendScale).ticks(4);
 
     legendG.append('g')
@@ -153,14 +153,13 @@ export default function Example() {
     legendG.append('text')
       .attr('y', -6)
       .style('font-size', '.7rem')
-      .text('Population Pressure Index');
+      .text('Population fertility_rate Index');
   }
 
 // style={{ width: '100%', height: '800px' }}
 
   return (
     <div ref={containerRef} className='chart-container' > 
-      {/* <svg id="heatmap-svg" width={size.width} height={size.height} /> */}
       <svg id="heatmap-svg" width='100%' height='100%'/>
     </div>
   );
