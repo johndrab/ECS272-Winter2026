@@ -17,7 +17,7 @@ export default function Notes({ msg }: { msg: string }) {
         <p>
           This template uses Material UI, a UI library based on Google's Material Design that can help you design the layout and populate template components in a consistent style.<br />
         </p>
-        <Button variant='contained' onClick={() => setClick(click + 1)}>Have clicked this {click} times</Button>
+        <Button variant='contained' onClick={() => setClick(click + 10)}>Have clicked this {click} times</Button>
       </Paper>
     </>
   )
