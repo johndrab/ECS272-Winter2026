@@ -103,7 +103,7 @@ export default function StarCoordinates() {
 
     return d3.scaleSequential()
         .domain(yearExtent)
-        .interpolator(d3.interpolateTurbo); // or Plasma, Inferno, Turbo
+        .interpolator(d3.interpolateViridis);
     }, [yearExtent]);
 
     // adding shapes for each contentent to get general county information
@@ -118,13 +118,13 @@ export default function StarCoordinates() {
 
 
     const { width, height } = size;
-    const cx = width / 2 + 80;
-    const cy = (height / 2) -0;
-    const radius = Math.min(width, height) * 0.47;
+    const cx = width / 2 + 90;
+    const cy = (height / 2) -6;
+    const radius = Math.min(width, height) * 0.45;
 
     
-    const legendX = width - 160;
-    const legendY = 40;
+    const legendX = 80;
+    const legendY = 30;
     const legendItemSpacing = 18;
     const legendSymbolSize = 60;
 
@@ -134,7 +134,7 @@ export default function StarCoordinates() {
       className="chart-container"
       style={{ width: "100%", height: "100%" }}
     >
-      <h3 style={{ margin: "0rem 6" , textAlign: "center", fontSize: "1.02rem", position: "relative", left: "-180px", top: "9px"}}>Population Structure and Growth Metrics</h3>
+      <h3 style={{ margin: "0rem 6" , textAlign: "center", fontSize: "1.02rem", position: "relative", left: "-140px", top: "3px"}}>Population Structure and Growth Metrics</h3>
       <svg width={width} height={height}>
         {/* color for ledgend */}
         {colorScale && yearExtent && (
@@ -227,7 +227,7 @@ export default function StarCoordinates() {
         const continent = d.continent as string;
         const symbol = d3.symbol()
         .type(CONTINENT_SHAPES[continent] ?? DEFAULT_SHAPE)
-        .size(40)(); // tweak size if needed
+        .size(32)(); // tweak size if needed
 
         return (            
             // <circle
@@ -243,18 +243,18 @@ export default function StarCoordinates() {
             d={symbol!}
             transform={`translate(${cx + p.x}, ${cy + p.y})`}
             fill={colorScale ? colorScale(year) : "red"}
-            opacity={0.70}
+            opacity={0.75}
             />
         );
         })}
         {/* drawing ledgend    */}
         {colorScale && yearExtent && (
         <g
-            transform={`translate(${width * 0.03}, ${height - 70}) rotate(-90)`}
+            transform={`translate(${width * 0.05}, ${height - 102}) rotate(-90)`}
         >
             {/* gradient bar */}
             <rect
-            width={width * 0.5}
+            width={width * 0.45}
             height={10}
             fill="url(#year-gradient)"
             rx={2}
@@ -274,7 +274,7 @@ export default function StarCoordinates() {
             {/* max year */}
             <text
             x={38}
-            y={-width * 0.5 +9}
+            y={-width * 0.45 +9}
             fontSize={10}
             textAnchor="end"
             transform={`rotate(90)`}

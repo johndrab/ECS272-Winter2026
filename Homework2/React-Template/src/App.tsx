@@ -1,6 +1,6 @@
 import Heatmap from './components/Heatmap'
 import StarCoordinates from './components/StarCoordinates';
-import Example12 from './components/Example12'
+import Lineplot from './components/Lineplot'
 
 import Notes from './components/Notes'
 import { NotesWithReducer, CountProvider } from './components/NotesWithReducer';
@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
+import { grey, blue, indigo, brown } from '@mui/material/colors';
 
 
 // Adjust the color theme for material ui
@@ -19,7 +19,7 @@ const theme = createTheme({
       paper: grey[200],     // cards / Paper components
     },
     primary:{
-      main: grey[200],
+      main: grey[100],
     },
     secondary:{
       main: grey[700],
@@ -78,7 +78,7 @@ function Layout() {
   return (
     <Box
       id="main-container"
-      sx={{ width: '100vw', height: '100vh', bgcolor: "background.paper",}}
+      sx={{ width: '100vw', height: '100vh', bgcolor: 'primary.main',}}
     >
       <Grid
         container
@@ -93,12 +93,12 @@ function Layout() {
           spacing={1}
         >
           {/* Top Left */}
-          <Grid item xs={6} sx={{ width: '50vw', height: '55vh' }}>
+          <Grid item xs={6} sx={{ width: '50vw', height: '53vh' }}>
             <Heatmap />
           </Grid>
 
           {/* Top Right */}
-          <Grid item xs={6} sx={{ width: '45vw', height: '55vh' }}>
+          <Grid item xs={6} sx={{ width: '48vw', height: '53vh' }}>
             <StarCoordinates />
           </Grid>
         </Grid>
@@ -107,10 +107,9 @@ function Layout() {
         <Grid
           item
           xs={12}
-          sx={{ width: '100vw', height: '30vh' }}
-        > Temp Text
-          {/* Placeholder for long line graph */}
-          {/* <LongLineGraph /> */}
+          sx={{ width: '100vw', height: '41vh' }}
+        >
+          <Lineplot />
         </Grid>
       </Grid>
     </Box>
