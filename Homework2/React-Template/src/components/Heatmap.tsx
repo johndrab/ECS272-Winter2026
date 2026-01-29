@@ -19,7 +19,6 @@ export default function Example() {
 
   useResizeObserver({ ref: containerRef as React.RefObject<HTMLDivElement>, onResize });
 
-  // Load CSV
   useEffect(() => {
     const loadCSV = async () => {
       try {
@@ -27,8 +26,6 @@ export default function Example() {
           country: d.country ?? '',
           year: d.year ?? '',
           fertility_rate: d.fertility_rate ? +d.fertility_rate : 0, 
-
-          // pressure: d.population ? +d.population : 0,
 
         }));
         setData(csvData as HeatmapDatum[]);
@@ -39,7 +36,6 @@ export default function Example() {
     loadCSV();
   }, []);
 
-  // Draw chart
   useEffect(() => {
     if (isEmpty(data)) return;
     if (size.width === 0 || size.height === 0) return;
@@ -50,18 +46,15 @@ export default function Example() {
   }, [data, size]);
 
   function initChart() {
-    // Filter out invalid rows
     const filteredData = data.filter(d => d.country && d.year && !isNaN(d.fertility_rate));
 
-    // Use only first 10 countries/years for simplicity
     const years = Array.from(new Set(filteredData.map(d => d.year)));
     const countries = Array.from(new Set(filteredData.map(d => d.country).sort()));
 
     const sliceData = data.filter(d => 
   countries.includes(d.country) && years.includes(d.year)
 );
-  
-    // Scales
+
     const xScale = d3.scaleBand()
       .domain(years)
       .range([margin.left, size.width - margin.right])
@@ -75,9 +68,7 @@ export default function Example() {
     const fertility_rateExtent = d3.extent(sliceData, d => d.fertility_rate) as [number, number];
     const colorScale = d3.scaleSequential(d3.interpolateYlOrRd).domain(fertility_rateExtent);
 
-    const svg = d3.select('#heatmap-svg');
-
-    // --- Heatmap rects ---
+    const svg = d3.select('#heatmap-svg'); // heat map 
     const heatmapG = svg.append('g');
 
     heatmapG.selectAll('rect')
@@ -89,7 +80,7 @@ export default function Example() {
       .attr('height', yScale.bandwidth())
       .attr('fill', d => colorScale(d.fertility_rate));
 
-    // --- Axes ---
+    // axes 
     svg.append('g')
       .attr('transform', `translate(0, ${size.height - margin.bottom})`)
       .call(d3.axisBottom(xScale).tickValues(xScale.domain().filter((_, i) => i % 1 === 0)))
@@ -101,7 +92,6 @@ export default function Example() {
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(yScale));
 
-    // --- Title & axis labels ---
     svg.append('text')
       .attr('x', size.width / 2)
       .attr('y', margin.top / 2)
@@ -122,7 +112,7 @@ export default function Example() {
       .style('font-size', '.8rem')
       .text('Country');
 
-    // --- Legend ---
+    // for creating the ledgend 
     const legendWidth = 120;
     const legendHeight = 10;
     const legendG = svg.append('g')

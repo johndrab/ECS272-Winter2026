@@ -22,7 +22,7 @@ export default function StarCoordinates() {
     const [data, setData] = React.useState<DataRow[]>([]);
     const [size, setSize] = React.useState<Size>({ width: 0, height: 0 });
 
-    // ---------------- Load CSV inside component (like heatmap) ----------------
+    // data loading
     React.useEffect(() => {
         const loadData = async () => {
         try {
@@ -37,7 +37,6 @@ export default function StarCoordinates() {
         loadData();
     }, []);
 
-    // ---------------- Resize observer using usehooks-ts ----------------
     const onResize = useDebounceCallback((size: Size) => {
         setSize(size);
     }, 200);
@@ -47,7 +46,7 @@ export default function StarCoordinates() {
         onResize,
     });
 
-    // ---------------- Define star axes ----------------
+
     const AXIS_LABELS: Record<string, string> = {
     urban_population: "Urban Population",
     fertility_rate: "Fertility Rate",
@@ -83,7 +82,7 @@ export default function StarCoordinates() {
 
         return {
         key,
-        label: AXIS_LABELS[key] ?? key, // fallback just in case
+        label: AXIS_LABELS[key] ?? key,
         angle: i * angleStep,
         min: Math.min(...values),
         max: Math.max(...values),
@@ -158,16 +157,13 @@ export default function StarCoordinates() {
 
         {/* star axes */}
         {axes.map((axis) => {
-        // Axis line endpoint
         const xAxis = cx + radius * Math.cos(axis.angle);
         const yAxis = cy + radius * Math.sin(axis.angle);
 
-        // Label offset (push labels outside the axis)
-        const labelOffset = radius + 19; // distance from center to start of label
+        const labelOffset = radius + 19; // axis labes radious 
         const xLabel = cx + labelOffset * Math.cos(axis.angle) -7;
         const yLabel = cy + labelOffset * Math.sin(axis.angle);
 
-        // Split label into words
         const words = axis.label.split(" ");
         const lineHeight = 12; // font size
         const totalHeight = words.length * lineHeight;
@@ -187,7 +183,7 @@ export default function StarCoordinates() {
             {/* Label */}
             <text
                 x={xLabel}
-                y={yLabel - totalHeight / 2 + 6} // center vertically
+                y={yLabel - totalHeight / 2 + 6} // center vert
                 fontSize={lineHeight}
                 textAnchor={
                 axis.angle === Math.PI ? "end" :
@@ -198,8 +194,8 @@ export default function StarCoordinates() {
                 {words.map((word, i) => (
                 <tspan
                     key={i}
-                    x={xLabel} // keep each line aligned horizontally
-                    dy={i === 0 ? 0 : lineHeight} // stack
+                    x={xLabel} 
+                    dy={i === 0 ? 0 : lineHeight} 
                 >
                     {word}
                 </tspan>
@@ -227,7 +223,7 @@ export default function StarCoordinates() {
         const continent = d.continent as string;
         const symbol = d3.symbol()
         .type(CONTINENT_SHAPES[continent] ?? DEFAULT_SHAPE)
-        .size(32)(); // tweak size if needed
+        .size(32)(); // data point sizing here
 
         return (            
             // <circle
@@ -294,7 +290,7 @@ export default function StarCoordinates() {
         </g>
         )}
 
-        {/* continent shape legend */}
+        {/* shape legend */}
         <g transform={`translate(${legendX}, ${legendY})`}>
         <text fontSize={13} fontWeight={600} y={-10} x={30}>
             Continent

@@ -2,8 +2,6 @@ import Heatmap from './components/Heatmap'
 import StarCoordinates from './components/StarCoordinates';
 import Lineplot from './components/Lineplot'
 
-import Notes from './components/Notes'
-import { NotesWithReducer, CountProvider } from './components/NotesWithReducer';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
@@ -15,8 +13,8 @@ import { grey, blue, indigo, brown } from '@mui/material/colors';
 const theme = createTheme({
   palette: {
     background: {
-      default: grey[100],   // page background
-      paper: grey[200],     // cards / Paper components
+      default: grey[100],  
+      paper: grey[200],     
     },
     primary:{
       main: grey[100],
@@ -28,52 +26,6 @@ const theme = createTheme({
 })
 
 // For how Grid works, refer to https://mui.com/material-ui/react-grid/
-
-// function Layout() {
-//   return (
-//     <Box
-//       id="main-container"
-//       sx={{ width: '100vw', height: '100vh' }}
-//     >
-//       <Grid
-//         container
-//         spacing={1}
-//         sx={{ width: '100%', height: '100%' }}
-//       >
-//         {/* LEFT: Heatmap */}
-//         <Grid
-//           item
-//           xs={6}
-//           sx= {{ width: '55%', height: '55%' }}//{{ height: '100%' }}
-//         >
-//           <Example />
-//         </Grid>
-
-//         {/* RIGHT COLUMN */}
-//         <Grid
-//           item
-//           xs={6}
-//           sx={{ width: '40%', height: '95%' }}
-//         >
-//           <Grid
-//             container
-//             direction="column"
-//             sx={{ height: '100%' }}
-//           >
-//             {/* Top-right: Star Coordinates */}
-//             <Grid item sx={{width: '100%', height: '50%' }}>
-//               <StarCoordinates />
-//             </Grid>
-
-//           </Grid>
-
-          
-//         </Grid>
-//       </Grid>
-//     </Box>
-//   );
-// }
-
 function Layout() {
   return (
     <Box
@@ -85,7 +37,7 @@ function Layout() {
         spacing={1}
         sx={{ width: '100%', height: '100%' }}
       >
-        {/* ===== TOP HALF ===== */}
+        {/* TOP HALF  */}
         <Grid
           container
           xs={12}
@@ -103,7 +55,7 @@ function Layout() {
           </Grid>
         </Grid>
 
-        {/* ===== BOTTOM HALF ===== */}
+        {/* BOTTOM HALF */}
         <Grid
           item
           xs={12}
