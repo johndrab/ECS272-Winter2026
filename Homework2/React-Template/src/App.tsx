@@ -1,4 +1,4 @@
-import Example from './components/Example'
+import Heatmap from './components/Heatmap'
 import StarCoordinates from './components/StarCoordinates';
 import Example12 from './components/Example12'
 
@@ -14,8 +14,12 @@ import { grey } from '@mui/material/colors';
 // Adjust the color theme for material ui
 const theme = createTheme({
   palette: {
+    background: {
+      default: grey[100],   // page background
+      paper: grey[200],     // cards / Paper components
+    },
     primary:{
-      main: grey[700],
+      main: grey[200],
     },
     secondary:{
       main: grey[700],
@@ -27,67 +31,92 @@ const theme = createTheme({
 
 // function Layout() {
 //   return (
-//     <Box id='main-container'>
-//       <Stack spacing={1} sx={{ height: '100%' }}>
-//         {/* Top row: Example component taking about 60% width */}
-//         <Grid container spacing={1} sx={{ height: '95%' }}>
-//           <Grid size={7}>
-//             <Example />
-//           </Grid>
-//           {/* flexible spacer to take remaining space */}
-//           {/* <Grid size="grow" /> */}
+//     <Box
+//       id="main-container"
+//       sx={{ width: '100vw', height: '100vh' }}
+//     >
+//       <Grid
+//         container
+//         spacing={1}
+//         sx={{ width: '100%', height: '100%' }}
+//       >
+//         {/* LEFT: Heatmap */}
+//         <Grid
+//           item
+//           xs={6}
+//           sx= {{ width: '55%', height: '55%' }}//{{ height: '100%' }}
+//         >
+//           <Example />
 //         </Grid>
-//         {/* Bottom row: Notes component taking full width */}
 
-//       </Stack>
+//         {/* RIGHT COLUMN */}
+//         <Grid
+//           item
+//           xs={6}
+//           sx={{ width: '40%', height: '95%' }}
+//         >
+//           <Grid
+//             container
+//             direction="column"
+//             sx={{ height: '100%' }}
+//           >
+//             {/* Top-right: Star Coordinates */}
+//             <Grid item sx={{width: '100%', height: '50%' }}>
+//               <StarCoordinates />
+//             </Grid>
+
+//           </Grid>
+
+          
+//         </Grid>
+//       </Grid>
 //     </Box>
-//   )
+//   );
 // }
 
 function Layout() {
   return (
     <Box
       id="main-container"
-      sx={{ width: '100vw', height: '100vh' }}
+      sx={{ width: '100vw', height: '100vh', bgcolor: "background.paper",}}
     >
       <Grid
         container
         spacing={1}
         sx={{ width: '100%', height: '100%' }}
       >
-        {/* LEFT: Heatmap */}
+        {/* ===== TOP HALF ===== */}
         <Grid
-          item
-          xs={6}
-          sx= {{ width: '55%', height: '95%' }}//{{ height: '100%' }}
+          container
+          xs={12}
+          sx={{ height: '50%' }}
+          spacing={1}
         >
-          <Example />
-        </Grid>
-
-        {/* RIGHT COLUMN */}
-        <Grid
-          item
-          xs={6}
-          sx={{ width: '40%', height: '95%' }}
-        >
-          <Grid
-            container
-            direction="column"
-            sx={{ height: '100%' }}
-          >
-            {/* Top-right: Star Coordinates */}
-            <Grid item sx={{width: '100%', height: '50%' }}>
-              <StarCoordinates />
-            </Grid>
-
+          {/* Top Left */}
+          <Grid item xs={6} sx={{ width: '50vw', height: '55vh' }}>
+            <Heatmap />
           </Grid>
 
-          
+          {/* Top Right */}
+          <Grid item xs={6} sx={{ width: '45vw', height: '55vh' }}>
+            <StarCoordinates />
+          </Grid>
+        </Grid>
+
+        {/* ===== BOTTOM HALF ===== */}
+        <Grid
+          item
+          xs={12}
+          sx={{ width: '100vw', height: '30vh' }}
+        > Temp Text
+          {/* Placeholder for long line graph */}
+          {/* <LongLineGraph /> */}
         </Grid>
       </Grid>
     </Box>
   );
 }
+
 
 
 function App() {

@@ -14,7 +14,7 @@ export default function Example() {
   const [data, setData] = useState<HeatmapDatum[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<ComponentSize>({ width: 0, height: 0 });
-  const margin: Margin = { top: 50, right: 20, bottom: 60, left: 100 };
+  const margin: Margin = { top: 50, right: 20, bottom: 50, left: 100 };
   const onResize = useDebounceCallback((size: ComponentSize) => setSize(size), 200);
 
   useResizeObserver({ ref: containerRef as React.RefObject<HTMLDivElement>, onResize });
@@ -117,7 +117,7 @@ export default function Example() {
       .text('Year');
 
     svg.append('text')
-      .attr('transform', `translate(15, ${size.height / 2}) rotate(-90)`)
+      .attr('transform', `translate(25, ${size.height / 2}) rotate(-90)`)
       .attr('text-anchor', 'middle')
       .style('font-size', '.8rem')
       .text('Country');
@@ -153,7 +153,7 @@ export default function Example() {
     legendG.append('text')
       .attr('y', -6)
       .style('font-size', '.7rem')
-      .text('Population fertility_rate Index');
+      .text('Population Fertility Rate');
   }
 
 // style={{ width: '100%', height: '800px' }}
