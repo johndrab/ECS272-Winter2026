@@ -1,23 +1,17 @@
-import Heatmap from './components/Heatmap'
-import StarCoordinates from './components/StarCoordinates';
-import Lineplot from './components/Lineplot'
-
+import Example from './components/Example'
+import Notes from './components/Notes'
+import { NotesWithReducer, CountProvider } from './components/NotesWithReducer';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { grey, blue, indigo, brown } from '@mui/material/colors';
-
+import { grey } from '@mui/material/colors';
 
 // Adjust the color theme for material ui
 const theme = createTheme({
   palette: {
-    background: {
-      default: grey[100],  
-      paper: grey[200],     
-    },
     primary:{
-      main: grey[100],
+      main: grey[700],
     },
     secondary:{
       main: grey[700],
@@ -26,49 +20,32 @@ const theme = createTheme({
 })
 
 // For how Grid works, refer to https://mui.com/material-ui/react-grid/
+
 function Layout() {
   return (
-    <Box
-      id="main-container"
-      sx={{ width: '100vw', height: '100vh', bgcolor: 'primary.main',}}
-    >
-      <Grid
-        container
-        spacing={1}
-        sx={{ width: '100%', height: '100%' }}
-      >
-        {/* TOP HALF  */}
-        <Grid
-          container
-          xs={12}
-          sx={{ height: '50%' }}
-          spacing={1}
-        >
-          {/* Top Left */}
-          <Grid item xs={6} sx={{ width: '50vw', height: '53vh' }}>
-            <Heatmap />
+    <Box id='main-container'>
+      <Stack spacing={1} sx={{ height: '100%' }}>
+        {/* Top row: Example component taking about 60% width */}
+        <Grid container spacing={1} sx={{ height: '60%' }}>
+          <Grid size={7}>
+            <Example />
           </Grid>
-
-          {/* Top Right */}
-          <Grid item xs={6} sx={{ width: '48vw', height: '53vh' }}>
-            <StarCoordinates />
-          </Grid>
+          {/* flexible spacer to take remaining space */}
+          <Grid size="grow" />
         </Grid>
-
-        {/* BOTTOM HALF */}
-        <Grid
-          item
-          xs={12}
-          sx={{ width: '100vw', height: '41vh' }}
-        >
-          <Lineplot />
+        {/* Bottom row: Notes component taking full width */}
+        <Grid size={12} sx={{ height: '40%' }}>
+          <Notes msg={"This is a message sent from App.tsx as component prop"} />
+          { /* Uncomment the following to see how state management works in React.
+            <CountProvider>
+              <NotesWithReducer msg={"This is a message sent from App.tsx as component prop"} />
+            </CountProvider>
+          */ }
         </Grid>
-      </Grid>
+      </Stack>
     </Box>
-  );
+  )
 }
-
-
 
 function App() {
   return (
