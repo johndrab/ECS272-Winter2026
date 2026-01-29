@@ -66,7 +66,7 @@ export default function Example() {
       .padding(0.05);
 
     const fertility_rateExtent = d3.extent(sliceData, d => d.fertility_rate) as [number, number];
-    const colorScale = d3.scaleSequential(d3.interpolateYlOrRd).domain(fertility_rateExtent);
+    const colorScale = d3.scaleSequential(d3.interpolateYlOrBr).domain(fertility_rateExtent);
 
     const svg = d3.select('#heatmap-svg'); // heat map 
     const heatmapG = svg.append('g');

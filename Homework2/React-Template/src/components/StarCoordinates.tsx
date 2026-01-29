@@ -246,7 +246,7 @@ export default function StarCoordinates() {
         {/* drawing ledgend    */}
         {colorScale && yearExtent && (
         <g
-            transform={`translate(${width * 0.05}, ${height - 102}) rotate(-90)`}
+            transform={`translate(${width * 0.05}, ${height - 75}) rotate(-90)`}
         >
             {/* gradient bar */}
             <rect
@@ -270,7 +270,7 @@ export default function StarCoordinates() {
             {/* max year */}
             <text
             x={38}
-            y={-width * 0.45 +9}
+            y={-width * 0.45 +10}
             fontSize={10}
             textAnchor="end"
             transform={`rotate(90)`}
