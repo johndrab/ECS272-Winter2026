@@ -14,7 +14,7 @@ export default function Example() {
   const [data, setData] = useState<HeatmapDatum[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<ComponentSize>({ width: 0, height: 0 });
-  const margin: Margin = { top: size.height * 0.15, right: 5, bottom: size.height * 0.11, left: 90 };
+  const margin: Margin = { top: size.height * 0.15, right: 5, bottom: Math.max(size.height * 0.11, 30), left: 90 };
   const onResize = useDebounceCallback((size: ComponentSize) => setSize(size), 200);
 
   useResizeObserver({ ref: containerRef as React.RefObject<HTMLDivElement>, onResize });

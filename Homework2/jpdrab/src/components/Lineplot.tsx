@@ -63,35 +63,34 @@ export default function PopulationLineChart() {
     .domain(d3.extent(data, (d) => d.year) as [number, number])
     .range([0, innerWidth]);
 
-  const yScale = d3
-    .scaleLog()
-    .domain([
-        d3.min(filteredData, d => d.population)!,
-        d3.max(filteredData, d => d.population)!
-    ])
+  const yScale = d3.scaleSqrt()
+    .domain([0, d3.max(data, d => d.population)!])
     .range([innerHeight, 0]);
+    
 
   const colorScale = d3
     .scaleOrdinal<string>()
     .domain(countries)
     .range(countries.map((_, i) => d3.interpolateTurbo(i / countries.length)));
 
-  // ---------------- Line generator ----------------
   const line = d3
     .line<DataRow>()
     .x((d) => xScale(d.year))
     .y((d) => yScale(d.population))
     .curve(d3.curveMonotoneX);
 
-//const fontSize = 10;
-//const spacing = 4; // space between legend items
-//let cumulativeX = 0;
+  const legendItemHeight = height < 300 ? 9 : 15;
+  const legendFontSize = height < 300 ? 8 : 12;
 
-const legendItemHeight = height < 600 ? 9 : 12;
-const legendFontSize = height < 600 ? 8 : 10;
+  const tickCount = Math.max(4, Math.floor(height / 40));
+  const maxY = yScale.domain()[1];
 
+  const tickValues = d3.ticks(0, Math.sqrt(maxY), tickCount)
+  .map(d => d * d);
 
-
+  d3.axisLeft(yScale)
+  .tickValues(tickValues)
+  .tickFormat(d3.format("~s"));
 
   return (
     <div
@@ -105,36 +104,42 @@ const legendFontSize = height < 600 ? 8 : 10;
 
       <svg width={width} height={height}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
-          {/* X axis */}
+          {/* x axis */}
           <g
             transform={`translate(0, ${innerHeight})`}
             ref={(node) => {
               if (node) {
                 d3.select(node).call(
                   d3.axisBottom(xScale)
-                    .ticks(32)
+                    .ticks(Math.floor(width / 50))
                     .tickFormat(d3.format("d"))
                 );
               }
             }}
           />
 
-          {/* Y axis */}
+          {/* y axis */}
           <g
             ref={(node) => {
-              if (node) {
-                d3.select(node).call(
-                    d3.axisLeft(yScale)
-                        .ticks(6, "~s")
-                );
-              }
+              if (!node) return;
+
+              const tickCount = Math.max(4, Math.floor(innerHeight / 40));
+              const maxY = yScale.domain()[1];
+
+              const tickValues = d3
+                .ticks(0, Math.sqrt(maxY), tickCount)
+                .map(d => d * d);
+
+              d3.select(node).call(
+                d3.axisLeft(yScale)
+                  .tickValues(tickValues)
+                  .tickFormat(d3.format("~s"))
+              );
             }}
           />
 
-          {/* Lines + points */}
           {[...dataByCountry.entries()].map(([country, values]) => (
             <g key={country}>
-              {/* Line */}
               <path
                 d={line(values)!}
                 fill="none"
@@ -142,19 +147,6 @@ const legendFontSize = height < 600 ? 8 : 10;
                 strokeWidth={2}
                 opacity={0.8}
               />
-
-              {/* Points
-              {values.map((d, i) => (
-                <circle
-                  key={i}
-                  cx={xScale(d.year)}
-                  cy={yScale(d.population)}
-                  r={1.5}
-                  fill={colorScale(country)}
-                  stroke="white"
-                  strokeWidth={0.5}
-                />
-              ))} */}
             </g>
           ))}
 
@@ -178,15 +170,13 @@ const legendFontSize = height < 600 ? 8 : 10;
             Population
           </text>
         </g>
-
-
         <g transform={`translate(${width - margin.right + 10}, ${0})`}>
           {countries.map((country, i) => (
             <g key={country} transform={`translate(0, ${i * legendItemHeight})`}>
               <rect width={8} height={8} fill={colorScale(country)} />
               <text
                 x={12}
-                y={legendItemHeight -3 }
+                y={legendItemHeight - (legendItemHeight * 0.4) }
                 fontSize={legendFontSize}
               >
                 {country}
@@ -195,8 +185,6 @@ const legendFontSize = height < 600 ? 8 : 10;
           ))}
         </g>
 
-
-   
       </svg>
     </div>
   );

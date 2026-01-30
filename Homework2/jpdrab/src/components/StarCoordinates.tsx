@@ -119,14 +119,14 @@ export default function StarCoordinates() {
     const { width, height } = size;
     const cx = width / 2 ;
     const cy = (height / 2) ;
-    const radius = Math.min(width , height  ) * .42 ; //plot size ratio modifier
+    const radius = Math.min(width /2 , height  ) * .62 ; //plot size ratio modifier
 
     console.log(width)
     console.log(height)
     console.log("W/H above")
     const legendX = width * 0.7;
     const legendY = height * 0.08;
-    const legendItemSpacing = height * .045;
+    const legendItemSpacing = 15;//height * .045;
     const legendSymbolSize = 50;
 
   return (
@@ -162,7 +162,7 @@ export default function StarCoordinates() {
         const xAxis = cx + radius * Math.cos(axis.angle);
         const yAxis = cy + radius * Math.sin(axis.angle);
 
-        const labelOffset = radius + ( Math.min(width, height) * 0.05 ); // axis labes radious 
+        const labelOffset = radius + ( Math.min(width/2, height) * 0.04); // axis labes radious 
         const xLabel = cx + labelOffset * Math.cos(axis.angle) -7;
         const yLabel = cy + labelOffset * Math.sin(axis.angle);
 
@@ -248,51 +248,46 @@ export default function StarCoordinates() {
         })}
         {/* drawing ledgend    */}
         {colorScale && yearExtent && (
-        <g
-            transform={`translate(${width * 0.01}, ${height * 0.9 }) rotate(-90)`}
-        >
+        <g transform={`translate(${width * 0.05}, ${height * 0.06})`}>
+            {/* label */}
+            <text
+            x={(width * 0.3) / 2}
+            y={-6}
+            fontSize={11}
+            textAnchor="middle"
+            >
+            Year
+            </text>
+
             {/* gradient bar */}
             <rect
-            width={height * .85 }
-            height={width * 0.014}
+            width={width * 0.3}
+            height={10}
             fill="url(#year-gradient)"
             rx={2}
             />
 
             {/* min year */}
             <text
-            x={width * 0.014 + 3}
-            y={0}
+            x={0}
+            y={22}
             fontSize={10}
             textAnchor="start"
-            transform={`rotate(90)`}
             >
             {yearExtent[0]}
             </text>
 
             {/* max year */}
             <text
-            x={33}
-            y={-height * 0.85 +10 }
+            x={width * 0.3}
+            y={22}
             fontSize={10}
             textAnchor="end"
-            transform={`rotate(90)`}
             >
             {yearExtent[1]}
             </text>
-
-            {/* label */}
-            <text
-            x={height * 0.45}
-            y={width * 0.035}
-            fontSize={11}
-            textAnchor="middle"
-            >
-            Year
-            </text>
         </g>
         )}
-
         {/* shape legend */}
         <g transform={`translate(${legendX}, ${legendY})`}>
         <text fontSize={13} fontWeight={600} y={-3} x={2}>
