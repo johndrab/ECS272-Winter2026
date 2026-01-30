@@ -49,7 +49,7 @@ export default function PopulationLineChart() {
     return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
   }
 
-  const margin = { top: 30, right: 20, bottom: 40, left: 70 };
+  const margin = { top: 10, right: 140, bottom: 40, left: 70 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
@@ -83,9 +83,15 @@ export default function PopulationLineChart() {
     .y((d) => yScale(d.population))
     .curve(d3.curveMonotoneX);
 
-const fontSize = 10;
-const spacing = 4; // space between legend items
-let cumulativeX = 0;
+//const fontSize = 10;
+//const spacing = 4; // space between legend items
+//let cumulativeX = 0;
+
+const legendItemHeight = height < 600 ? 9 : 12;
+const legendFontSize = height < 600 ? 8 : 10;
+
+
+
 
   return (
     <div
@@ -172,29 +178,25 @@ let cumulativeX = 0;
             Population
           </text>
         </g>
-        {/*  color legend */}
-        <g transform={`translate(90, 6)`}>
-        {(() => {
-            const fontSize = 10;
-            const spacing = 8;
-            let cumulativeX = 0;
 
-            return countries.map((country) => {
-            const x = cumulativeX;
-            const labelWidth = country.length * (fontSize * 0.6); 
-            cumulativeX += 12 + spacing + labelWidth; 
 
-            return (
-                <g key={country} transform={`translate(${x}, 0)`}>
-                <rect width={12} height={12} fill={colorScale(country)} />
-                <text x={16} y={10} fontSize={fontSize} textAnchor="start">
-                    {country}
-                </text>
-                </g>
-            );
-            });
-        })()}
+        <g transform={`translate(${width - margin.right + 10}, ${0})`}>
+          {countries.map((country, i) => (
+            <g key={country} transform={`translate(0, ${i * legendItemHeight})`}>
+              <rect width={8} height={8} fill={colorScale(country)} />
+              <text
+                x={12}
+                y={legendItemHeight -3 }
+                fontSize={legendFontSize}
+              >
+                {country}
+              </text>
+            </g>
+          ))}
         </g>
+
+
+   
       </svg>
     </div>
   );

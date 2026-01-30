@@ -14,7 +14,7 @@ export default function Example() {
   const [data, setData] = useState<HeatmapDatum[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<ComponentSize>({ width: 0, height: 0 });
-  const margin: Margin = { top: 50, right: 10, bottom: 50, left: 120 };
+  const margin: Margin = { top: size.height * 0.15, right: 5, bottom: size.height * 0.11, left: 90 };
   const onResize = useDebounceCallback((size: ComponentSize) => setSize(size), 200);
 
   useResizeObserver({ ref: containerRef as React.RefObject<HTMLDivElement>, onResize });
@@ -65,6 +65,15 @@ export default function Example() {
       .range([margin.top, size.height - margin.bottom])
       .padding(0.05);
 
+    const axisFontScale = d3.scaleLinear()
+      .domain([300, 900])   // small laptop → desktop
+      .range([3, 12])       // font size range (px)
+      .clamp(true);
+
+    const axisFontSize = axisFontScale(size.width * 0.9);
+
+
+
     const fertility_rateExtent = d3.extent(sliceData, d => d.fertility_rate) as [number, number];
     const colorScale = d3.scaleSequential(d3.interpolateYlOrBr).domain(fertility_rateExtent);
 
@@ -81,19 +90,33 @@ export default function Example() {
       .attr('fill', d => colorScale(d.fertility_rate));
 
     // axes 
+    //svg.append('g')
+    //  .attr('transform', `translate(0, ${size.height - margin.bottom})`)
+    //  .call(d3.axisBottom(xScale).tickValues(xScale.domain().filter((_, i) => i % 1 === 0)))
+    //  .selectAll("text")
+    //  .attr("transform", "rotate(-35)")
+    //  .style("text-anchor", "end");
+
     svg.append('g')
       .attr('transform', `translate(0, ${size.height - margin.bottom})`)
-      .call(d3.axisBottom(xScale).tickValues(xScale.domain().filter((_, i) => i % 1 === 0)))
+      .call(
+        d3.axisBottom(xScale)
+          .tickValues(xScale.domain().filter((_, i) => i % 1 === 0))
+      )
       .selectAll("text")
       .attr("transform", "rotate(-35)")
-      .style("text-anchor", "end");
+      .style("text-anchor", "end")
+      .attr("dx", "-0.6em")
+      .style("font-size", `${axisFontSize}px`);
+
+
 
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(yScale));
 
     svg.append('text')
-      .attr('x', size.width / 2)
+      .attr('x', size.width * .45)
       .attr('y', margin.top / 2)
       .attr('text-anchor', 'middle')
       .style('font-weight', 'bold')
@@ -101,7 +124,7 @@ export default function Example() {
 
     svg.append('text')
       .attr('x', size.width / 2)
-      .attr('y', size.height - 5)
+      .attr('y', size.height )
       .attr('text-anchor', 'middle')
       .style('font-size', '.8rem')
       .text('Year');
@@ -113,10 +136,10 @@ export default function Example() {
       .text('Country');
 
     // for creating the ledgend 
-    const legendWidth = 120;
-    const legendHeight = 10;
+    const legendWidth = size.width * 0.1;
+    const legendHeight = size.height * 0.03;
     const legendG = svg.append('g')
-      .attr('transform', `translate(${size.width - legendWidth - 40}, ${margin.top - 30})`);
+      .attr('transform', `translate(${(size.width * .86)}, ${size.height * .05 })`);
 
     const defs = svg.append('defs');
     const linearGradient = defs.append('linearGradient')

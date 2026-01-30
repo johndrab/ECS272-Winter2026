@@ -117,15 +117,17 @@ export default function StarCoordinates() {
 
 
     const { width, height } = size;
-    const cx = width / 2 + 90;
-    const cy = (height / 2) -6;
-    const radius = Math.min(width, height) * 0.45;
+    const cx = width / 2 ;
+    const cy = (height / 2) ;
+    const radius = Math.min(width , height  ) * .42 ; //plot size ratio modifier
 
-    
-    const legendX = 80;
-    const legendY = 30;
-    const legendItemSpacing = 18;
-    const legendSymbolSize = 60;
+    console.log(width)
+    console.log(height)
+    console.log("W/H above")
+    const legendX = width * 0.7;
+    const legendY = height * 0.08;
+    const legendItemSpacing = height * .045;
+    const legendSymbolSize = 50;
 
   return (
     <div 
@@ -133,7 +135,7 @@ export default function StarCoordinates() {
       className="chart-container"
       style={{ width: "100%", height: "100%" }}
     >
-      <h3 style={{ margin: "0rem 6" , textAlign: "center", fontSize: "1.02rem", position: "relative", left: "-140px", top: "3px"}}>Population Structure and Growth Metrics</h3>
+      <h3 style={{ margin: ".5rem" , textAlign: "center", fontSize: "1.02rem"}}>Population Structure and Growth Metrics</h3>
       <svg width={width} height={height}>
         {/* color for ledgend */}
         {colorScale && yearExtent && (
@@ -160,7 +162,7 @@ export default function StarCoordinates() {
         const xAxis = cx + radius * Math.cos(axis.angle);
         const yAxis = cy + radius * Math.sin(axis.angle);
 
-        const labelOffset = radius + 19; // axis labes radious 
+        const labelOffset = radius + ( Math.min(width, height) * 0.05 ); // axis labes radious 
         const xLabel = cx + labelOffset * Math.cos(axis.angle) -7;
         const yLabel = cy + labelOffset * Math.sin(axis.angle);
 
@@ -223,7 +225,8 @@ export default function StarCoordinates() {
         const continent = d.continent as string;
         const symbol = d3.symbol()
         .type(CONTINENT_SHAPES[continent] ?? DEFAULT_SHAPE)
-        .size(32)(); // data point sizing here
+	.size(width * .04)();
+	//.size(32)(); // data point sizing here
 
         return (            
             // <circle
@@ -239,27 +242,27 @@ export default function StarCoordinates() {
             d={symbol!}
             transform={`translate(${cx + p.x}, ${cy + p.y})`}
             fill={colorScale ? colorScale(year) : "red"}
-            opacity={0.75}
+            opacity={0.70}
             />
         );
         })}
         {/* drawing ledgend    */}
         {colorScale && yearExtent && (
         <g
-            transform={`translate(${width * 0.05}, ${height - 75}) rotate(-90)`}
+            transform={`translate(${width * 0.01}, ${height * 0.9 }) rotate(-90)`}
         >
             {/* gradient bar */}
             <rect
-            width={width * 0.45}
-            height={10}
+            width={height * .85 }
+            height={width * 0.014}
             fill="url(#year-gradient)"
             rx={2}
             />
 
             {/* min year */}
             <text
-            x={15}
-            y={-1}
+            x={width * 0.014 + 3}
+            y={0}
             fontSize={10}
             textAnchor="start"
             transform={`rotate(90)`}
@@ -269,8 +272,8 @@ export default function StarCoordinates() {
 
             {/* max year */}
             <text
-            x={38}
-            y={-width * 0.45 +10}
+            x={33}
+            y={-height * 0.85 +10 }
             fontSize={10}
             textAnchor="end"
             transform={`rotate(90)`}
@@ -280,8 +283,8 @@ export default function StarCoordinates() {
 
             {/* label */}
             <text
-            x={width * 0.25}
-            y={22}
+            x={height * 0.45}
+            y={width * 0.035}
             fontSize={11}
             textAnchor="middle"
             >
@@ -292,7 +295,7 @@ export default function StarCoordinates() {
 
         {/* shape legend */}
         <g transform={`translate(${legendX}, ${legendY})`}>
-        <text fontSize={13} fontWeight={600} y={-10} x={30}>
+        <text fontSize={13} fontWeight={600} y={-3} x={2}>
             Continent
         </text>
 
@@ -302,7 +305,7 @@ export default function StarCoordinates() {
             .size(legendSymbolSize)();
 
             return (
-            <g key={continent} transform={`translate(30, ${i * legendItemSpacing})`}>
+            <g key={continent} transform={`translate(0, ${i * legendItemSpacing})`}>
                 <path
                 d={symbolPath!}
                 transform="translate(8, 8)"
@@ -315,8 +318,6 @@ export default function StarCoordinates() {
             );
         })}
         </g>
-
-
       </svg>
     </div>
     

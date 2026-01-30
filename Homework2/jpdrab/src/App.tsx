@@ -41,16 +41,17 @@ function Layout() {
         <Grid
           container
           xs={12}
-          sx={{ height: '50%' }}
+          sx={{ width: '100%', height: '50%' }}
           spacing={1}
         >
+
           {/* Top Left */}
-          <Grid item xs={6} sx={{ width: '50vw', height: '53vh' }}>
+          <Grid item xs={6} sx={{ width: '55%', height: '100%' }}> 
             <Heatmap />
           </Grid>
 
           {/* Top Right */}
-          <Grid item xs={6} sx={{ width: '48vw', height: '53vh' }}>
+          <Grid item xs={6} sx={{ width: '42%', height: '100%' }}>
             <StarCoordinates />
           </Grid>
         </Grid>
@@ -59,7 +60,7 @@ function Layout() {
         <Grid
           item
           xs={12}
-          sx={{ width: '100vw', height: '41vh' }}
+          sx={{ width: '100%', height: '40%' }}
         >
           <Lineplot />
         </Grid>
@@ -68,6 +69,44 @@ function Layout() {
   );
 }
 
+//function Layout() {
+//  return (
+//    <Box
+//      id="main-container"
+//      sx={{
+//        width: '100%',
+//        minHeight: '100vh',
+//        bgcolor: 'primary.main',
+//        p: 1,
+//      }}
+//    >
+//      <Grid container spacing={2}>
+//
+//        {/* Heatmap */}
+//        <Grid item xs={12} md={6}>
+//          <Box sx={{ height: { xs: 400, md: 500 } }}>
+//            <Heatmap />
+//          </Box>
+//        </Grid>
+//
+//        {/* Star Coordinates */}
+//        <Grid item xs={12} md={6}>
+//          <Box sx={{ height: { xs: 400, md: 500 } }}>
+//            <StarCoordinates />
+//          </Box>
+//        </Grid>
+//
+//        {/* Line Plot */}
+//        <Grid item xs={12}>
+//          <Box sx={{ height: { xs: 350, md: 450 } }}>
+//            <Lineplot />
+//          </Box>
+//        </Grid>
+//
+//      </Grid>
+//    </Box>
+//  );
+//}
 
 
 function App() {
