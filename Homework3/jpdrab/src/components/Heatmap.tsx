@@ -338,7 +338,7 @@ function drawLegend(svg: any, fertility_rateExtent: [number, number], colorScale
   <Stack sx={{ width: '100%', height: '100%' }} spacing={1}>
 
     <Box sx={{ alignSelf: 'center', display: 'flex', alignItems: 'center'}}>
-      <span>Sort by</span>
+      <span>Sort Countries by</span>
       <select onChange={(e) => setSortMode(e.target.value as any)} style={{ marginLeft: '6px' }}>
         <option value="alphabetical">Alphabetical</option>
         <option value="continent">Continent</option>
