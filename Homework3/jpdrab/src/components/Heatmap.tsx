@@ -13,7 +13,12 @@ interface HeatmapDatum {
   continent: string;
 }
 
-export default function Example() {
+interface FilterProps {
+  onCountrySelected?: (country: string | null) => void;
+}
+
+
+export default function Example({ onCountrySelected }: FilterProps) {
   const [data, setData] = useState<HeatmapDatum[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<ComponentSize>({ width: 0, height: 0 });
@@ -167,11 +172,16 @@ useEffect(() => {
     .transition()
     .duration(500)
     .attr('stroke', (d: any) => d.country === selectedCountry ? 'grey' : 'none')
-    .attr('stroke-width', (d: any) => d.country === selectedCountry ? 2 : 0);
-    // .attr('opacity', (d: any) => d.country === selectedCountry ? 1 : 0.8);
+    .attr('stroke-width', (d: any) => d.country === selectedCountry ? 2 : 0)
+    .attr('opacity', (d: any) => {
+      if (!selectedCountry) return 1;  // No selection = full opacity
+      return d.country === selectedCountry ? 1 : 0.3;  // Selected vs others
+    });
 
   // Optional callback for other plots
-  if (onCountrySelected) onCountrySelected(selectedCountry);
+  if (onCountrySelected) {
+    onCountrySelected(selectedCountry);
+  }
 
 }, [selectedCountry]);
 
@@ -207,8 +217,11 @@ function updateChart() {
     .duration(750)
     .attr('y', (d: any) => yScale(d.country)!)
     .attr('stroke', (d: any) => d.country === selectedCountry ? 'grey' : 'none')
-    .attr('stroke-width', (d: any) => d.country === selectedCountry ? 2 : 0);
-    // .attr('opacity', (d: any) => d.country === selectedCountry ? 1 : .8);
+    .attr('stroke-width', (d: any) => d.country === selectedCountry ? 2 : 0)
+    .attr('opacity', (d: any) => {
+      if (!selectedCountry) return 1;  // No selection = full opacity
+      return d.country === selectedCountry ? 1 : 0.3;  // Selected vs others
+    });
 
   // Update y-axis
   svg.select('.y-axis')
@@ -339,3 +352,4 @@ function drawLegend(svg: any, fertility_rateExtent: [number, number], colorScale
   </Stack>
   );
 }
+

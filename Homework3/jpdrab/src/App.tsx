@@ -2,6 +2,7 @@ import Heatmap from './components/Heatmap'
 import StarCoordinates from './components/StarCoordinates';
 import Lineplot from './components/Lineplot'
 
+import { useState } from 'react'; // Add this import
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
@@ -27,6 +28,8 @@ const theme = createTheme({
 
 // For how Grid works, refer to https://mui.com/material-ui/react-grid/
 function Layout() {
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  
   return (
     <Box
       id="main-container"
@@ -51,7 +54,7 @@ function Layout() {
               // sx={{ width: '55%', height: '100%' }}
               sx={{ width: '100%', height: '50%' }}
               > 
-            <Heatmap />
+            <Heatmap onCountrySelected={setSelectedCountry}/>
           </Grid>
 
           {/* Top Right */}
@@ -68,7 +71,7 @@ function Layout() {
           // sx={{ width: '100%', height: '40%' }}
           sx={{ width: '48%', height: '95%' }}
         >
-          <StarCoordinates />
+          <StarCoordinates selectedCountry={selectedCountry}/>
           {/* <Lineplot /> */}
         </Grid>
       </Grid>

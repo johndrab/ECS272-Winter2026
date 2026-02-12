@@ -17,7 +17,12 @@ type StarAxis = {
   max: number;
 };
 
-export default function StarCoordinates() {
+interface StarCoordinatesProps {
+  selectedCountry: string | null;
+}
+
+
+export default function StarCoordinates({ selectedCountry }: StarCoordinatesProps) {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const [data, setData] = React.useState<DataRow[]>([]);
     const [size, setSize] = React.useState<Size>({ width: 0, height: 0 });
@@ -223,28 +228,33 @@ export default function StarCoordinates() {
         const year = d.year as number;
 
         const continent = d.continent as string;
+        const country = d.country as string; 
+
+        // Check if this country is selected
+        const isSelected = selectedCountry === country;
+        const isOtherCountry = selectedCountry && !isSelected;
+
         const symbol = d3.symbol()
-        .type(CONTINENT_SHAPES[continent] ?? DEFAULT_SHAPE)
-	.size(width * .04)();
-	//.size(32)(); // data point sizing here
+            .type(CONTINENT_SHAPES[continent] ?? DEFAULT_SHAPE)
+	        .size(width * .04)();
+	        //.size(32)(); // data point sizing here
 
         return (            
-            // <circle
-            // key={i}
-            // cx={cx + p.x}
-            // cy={cy + p.y}
-            // r={2.5}
-            // fill={colorScale ? colorScale(year) : "red"}
-            // opacity={0.75}
-            // />
             <path
             key={i}
             d={symbol!}
             transform={`translate(${cx + p.x}, ${cy + p.y})`}
             fill={colorScale ? colorScale(year) : "red"}
-            opacity={0.70}
+            opacity={
+                isSelected ? 1 :           // Full opacity if selected
+                isOtherCountry ? 0.2 :    // Very dim if another country selected
+                0.70                        // Normal opacity if nothing selected
+            }
+            stroke={isSelected ? "black" : "none"}  // Add stroke to selected
+            strokeWidth={isSelected ? .5 : 0}
             />
         );
+        
         })}
         {/* drawing ledgend    */}
         {colorScale && yearExtent && (
