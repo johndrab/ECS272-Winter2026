@@ -278,10 +278,10 @@ function drawContinentSeparators(svg: any, countries: string[], continentMap: Ma
   texts.join(
     enter => enter.append('text')
       .attr('x', size.width - 9)
-      .attr('y', d => yScale(countries[d])! + 12)
+      .attr('y', d => yScale(countries[d])! + 9)
       .attr('text-anchor', 'end')
       .style('font-weight', 'normal')
-      .style('font-size', '0.7rem')
+      .style('font-size', '0.6rem')
       .text(d => continentMap.get(countries[d]) ?? ''),
     update => update
       .transition()

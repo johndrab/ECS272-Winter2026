@@ -13,7 +13,12 @@ type Size = {
   height: number;
 };
 
-export default function PopulationLineChart() {
+interface PopulationLineChartProps {
+  selectedCountry: string | null;
+}
+
+
+export default function PopulationLineCharti({ selectedCountry }: PopulationLineChartProps ) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [data, setData] = React.useState<DataRow[]>([]);
   const [size, setSize] = React.useState<Size>({ width: 0, height: 0 });
