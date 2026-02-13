@@ -60,7 +60,7 @@ function Layout() {
           {/* Top Right */}
           <Grid item xs={6} sx={{ width: '100%', height: '50%' }}>
             {/* <StarCoordinates /> */}
-            <Lineplot />
+            <Lineplot selectedCountry={selectedCountry}/>
           </Grid>
         </Grid>
 

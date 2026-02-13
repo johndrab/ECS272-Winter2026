@@ -143,7 +143,7 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
             }}
           />
 
-          {[...dataByCountry.entries()].map(([country, values]) => (
+          {/* {[...dataByCountry.entries()].map(([country, values]) => (
             <g key={country}>
               <path
                 d={line(values)!}
@@ -153,7 +153,32 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
                 opacity={0.8}
               />
             </g>
-          ))}
+          ))} */}
+
+          {[...dataByCountry.entries()].map(([country, values]) => {
+              const isSelected = selectedCountry === country;
+              const isOtherCountry = selectedCountry && !isSelected;
+
+              return (
+                <g key={country}>
+                  <path
+                    d={line(values)!}
+                    fill="none"
+                    stroke={colorScale(country)}
+                    strokeWidth={isSelected ? 4 : 2}  // Thicker if selected
+                    opacity={
+                      isSelected ? 1 :           // Full opacity if selected
+                      isOtherCountry ? 0.15 :    // Very dim if another selected
+                      0.8                        // Normal if nothing selected
+                    }
+                    style={{
+                      transition: 'opacity 0.3s, stroke-width 0.3s'  // Smooth transition
+                    }}
+                  />
+                </g>
+              );
+            })}
+
 
           {/* Axis labels */}
           <text
@@ -175,7 +200,7 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
             Population
           </text>
         </g>
-        <g transform={`translate(${width - margin.right + 10}, ${0})`}>
+        {/* <g transform={`translate(${width - margin.right + 10}, ${0})`}>
           {countries.map((country, i) => (
             <g key={country} transform={`translate(0, ${i * legendItemHeight})`}>
               <rect width={8} height={8} fill={colorScale(country)} />
@@ -188,6 +213,41 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
               </text>
             </g>
           ))}
+        </g> */}
+
+        <g transform={`translate(${width - margin.right + 10}, ${0})`}>
+    {countries.map((country, i) => {
+      const isSelected = selectedCountry === country;
+      const isOtherCountry = selectedCountry && !isSelected;
+
+      return (
+        <g key={country} transform={`translate(0, ${i * legendItemHeight})`}>
+                <rect 
+                  width={8} 
+                  height={8} 
+                  fill={colorScale(country)}
+                  opacity={
+                    isSelected ? 1 :
+                    isOtherCountry ? 0.3 :
+                    1
+                  }
+                />
+                <text
+                  x={12}
+                  y={legendItemHeight - (legendItemHeight * 0.4)}
+                  fontSize={legendFontSize}
+                  opacity={
+                    isSelected ? 1 :
+                    isOtherCountry ? 0.3 :
+                    1
+                  }
+                  fontWeight={isSelected ? 'bold' : 'normal'}  // Bold if selected
+                >
+                  {country}
+                </text>
+              </g>
+            );
+          })}
         </g>
 
       </svg>
