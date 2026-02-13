@@ -83,7 +83,7 @@ export default function PopulationLineCharti({ selectedCountry, selectedMetric =
         .domain(d3.extent(filteredData, d => d[selectedMetric] as number) as [number, number])
         .range([innerHeight, 0])
         .nice()
-    : d3.scaleSqrt()
+    : d3.scaleLinear()
         .domain([0, d3.max(filteredData, d => d[selectedMetric] as number)!])
         .range([innerHeight, 0]);
 
