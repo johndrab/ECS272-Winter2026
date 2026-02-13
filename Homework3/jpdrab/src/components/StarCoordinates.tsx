@@ -19,13 +19,16 @@ type StarAxis = {
 
 interface StarCoordinatesProps {
   selectedCountry: string | null;
+  onAxisSelected?: (axisKey: string | null) => void
 }
 
 
-export default function StarCoordinates({ selectedCountry }: StarCoordinatesProps) {
+
+export default function StarCoordinates({ selectedCountry, onAxisSelected  }: StarCoordinatesProps) {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const [data, setData] = React.useState<DataRow[]>([]);
     const [size, setSize] = React.useState<Size>({ width: 0, height: 0 });
+    const [selectedAxis, setSelectedAxis] = React.useState<string | null>(null);
 
     // data loading
     React.useEffect(() => {
@@ -163,54 +166,66 @@ export default function StarCoordinates({ selectedCountry }: StarCoordinatesProp
         <circle cx={cx} cy={cy} r={2} fill="black" />
 
         {/* star axes */}
-        {axes.map((axis) => {
-        const xAxis = cx + radius * Math.cos(axis.angle);
-        const yAxis = cy + radius * Math.sin(axis.angle);
+  {axes.map((axis) => {
+    const xAxis = cx + radius * Math.cos(axis.angle);
+    const yAxis = cy + radius * Math.sin(axis.angle);
 
-        const labelOffset = radius + ( Math.min(width/2, height) * 0.04); // axis labes radious 
-        const xLabel = cx + labelOffset * Math.cos(axis.angle) -7;
-        const yLabel = cy + labelOffset * Math.sin(axis.angle);
+    const labelOffset = radius + ( Math.min(width/2, height) * 0.04);
+    const xLabel = cx + labelOffset * Math.cos(axis.angle) -7;
+    const yLabel = cy + labelOffset * Math.sin(axis.angle);
 
-        const words = axis.label.split(" ");
-        const lineHeight = 12; // font size
-        const totalHeight = words.length * lineHeight;
+    const words = axis.label.split(" ");
+    const lineHeight = 12;
+    const totalHeight = words.length * lineHeight;
 
-        return (
-            <g key={axis.key}>
-            {/* Axis line */}
-            <line
-                x1={cx}
-                y1={cy}
-                x2={xAxis}
-                y2={yAxis}
-                stroke="#888"
-                strokeWidth={1}
-            />
+    const isAxisSelected = selectedAxis === axis.key;
 
-            {/* Label */}
-            <text
-                x={xLabel}
-                y={yLabel - totalHeight / 2 + 6} // center vert
-                fontSize={lineHeight}
-                textAnchor={
-                axis.angle === Math.PI ? "end" :
-                axis.angle === 0 ? "start" : "middle"
-                }
-                dominantBaseline="middle"
+    return (
+      <g 
+        key={axis.key}
+        style={{ cursor: 'pointer' }}
+        onClick={() => {
+          const newSelection = selectedAxis === axis.key ? null : axis.key;
+          setSelectedAxis(newSelection);
+          if (onAxisSelected) onAxisSelected(newSelection);
+        }}
+      >
+        {/* Axis line */}
+        <line
+          x1={cx}
+          y1={cy}
+          x2={xAxis}
+          y2={yAxis}
+          stroke={isAxisSelected ? "#000" : "#888"}  // Darker if selected
+          strokeWidth={isAxisSelected ? 2.5 : 1}     // Thicker if selected
+        />
+
+        {/* Label */}
+        <text
+          x={xLabel}
+          y={yLabel - totalHeight / 2 + 6}
+          fontSize={lineHeight}
+          fontWeight={isAxisSelected ? 'bold' : 'normal'}  // Bold if selected
+          fill={isAxisSelected ? "#000" : "#333"}
+          textAnchor={
+            axis.angle === Math.PI ? "end" :
+            axis.angle === 0 ? "start" : "middle"
+          }
+          dominantBaseline="middle"
+        >
+          {words.map((word, i) => (
+            <tspan
+              key={i}
+              x={xLabel} 
+              dy={i === 0 ? 0 : lineHeight} 
             >
-                {words.map((word, i) => (
-                <tspan
-                    key={i}
-                    x={xLabel} 
-                    dy={i === 0 ? 0 : lineHeight} 
-                >
-                    {word}
-                </tspan>
-                ))}
-            </text>
-            </g>
-        );
-        })}
+              {word}
+            </tspan>
+          ))}
+        </text>
+      </g>
+    );
+  })}
         {/* data point maping  */}
         {data.map((d, i) => {
         const p = axes.reduce(

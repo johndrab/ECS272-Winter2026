@@ -15,10 +15,11 @@ type Size = {
 
 interface PopulationLineChartProps {
   selectedCountry: string | null;
+  selectedMetric?: string;
 }
 
 
-export default function PopulationLineCharti({ selectedCountry }: PopulationLineChartProps ) {
+export default function PopulationLineCharti({ selectedCountry, selectedMetric = 'population'}: PopulationLineChartProps ) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [data, setData] = React.useState<DataRow[]>([]);
   const [size, setSize] = React.useState<Size>({ width: 0, height: 0 });
@@ -36,8 +37,10 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
   }, []);
 
   const filteredData = React.useMemo(
-    () => data.filter(d => d.population > 0),
-    [data]
+    // () => data.filter(d => d.population > 0),
+    // [data]
+    () => data.filter(d => d[selectedMetric] != null && !isNaN(d[selectedMetric] as number)),
+    [data, selectedMetric]
   );
 
   const onResize = useDebounceCallback((size: Size) => {
@@ -68,10 +71,21 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
     .domain(d3.extent(data, (d) => d.year) as [number, number])
     .range([0, innerWidth]);
 
-  const yScale = d3.scaleSqrt()
-    .domain([0, d3.max(data, d => d.population)!])
-    .range([innerHeight, 0]);
-    
+
+  const smallRangeMetrics = ['fertility_rate', 'population_growth_rate', 'median_age'];
+
+  // const yScale = d3.scaleSqrt()
+  //   .domain([0, d3.max(filteredData, d => d[selectedMetric] as number)!])
+  //   .range([innerHeight, 0]);
+
+  const yScale = smallRangeMetrics.includes(selectedMetric)
+    ? d3.scaleLinear()
+        .domain(d3.extent(filteredData, d => d[selectedMetric] as number) as [number, number])
+        .range([innerHeight, 0])
+        .nice()
+    : d3.scaleSqrt()
+        .domain([0, d3.max(filteredData, d => d[selectedMetric] as number)!])
+        .range([innerHeight, 0]);
 
   const colorScale = d3
     .scaleOrdinal<string>()
@@ -81,30 +95,37 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
   const line = d3
     .line<DataRow>()
     .x((d) => xScale(d.year))
-    .y((d) => yScale(d.population))
+    // .y((d) => yScale(d.population))
+    .y((d) => yScale(d[selectedMetric] as number))
     .curve(d3.curveMonotoneX);
 
   const legendItemHeight = height < 300 ? 9 : 15;
   const legendFontSize = height < 300 ? 8 : 12;
 
-  const tickCount = Math.max(4, Math.floor(height / 40));
-  const maxY = yScale.domain()[1];
+  // const tickCount = Math.max(4, Math.floor(height / 40));
+  // const maxY = yScale.domain()[1];
 
-  const tickValues = d3.ticks(0, Math.sqrt(maxY), tickCount)
-  .map(d => d * d);
+  // const tickValues = d3.ticks(0, Math.sqrt(maxY), tickCount)
+  // .map(d => d * d);
 
-  d3.axisLeft(yScale)
-  .tickValues(tickValues)
-  .tickFormat(d3.format("~s"));
+  // d3.axisLeft(yScale)
+  // .tickValues(tickValues)
+  // .tickFormat(d3.format("~s"));
+
+  const METRIC_LABELS: Record<string, string> = {
+    population: 'Population',
+    urban_population: 'Urban Population',
+    fertility_rate: 'Fertility Rate',
+    median_age: 'Median Age',
+    population_density: 'Population Density',
+    population_growth_rate: 'Population Growth Rate',
+  };
+
 
   return (
-    <div
-      ref={containerRef}
-      className="chart-container"
-      style={{ width: "100%", height: "100%" }}
-    >
+    <div ref={containerRef} className="chart-container" style={{ width: "100%", height: "100%" }}>
       <h3 style={{ textAlign: "center", margin: "0.25rem 0" }}>
-        Population Over Time by Country
+        {METRIC_LABELS[selectedMetric] || selectedMetric} Over Time by Country
       </h3>
 
       <svg width={width} height={height}>
@@ -128,32 +149,31 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
             ref={(node) => {
               if (!node) return;
 
-              const tickCount = Math.max(4, Math.floor(innerHeight / 40));
-              const maxY = yScale.domain()[1];
+              if (smallRangeMetrics.includes(selectedMetric)) {
+                // Simple linear axis for small ranges
+                d3.select(node).call(
+                  d3.axisLeft(yScale)
+                    .ticks(Math.max(4, Math.floor(innerHeight / 40)))
+                    .tickFormat(d3.format(".2f"))  // 2 decimal places
+                );
+              } else {
+                // Custom ticks for sqrt scale (large numbers)
+                const tickCount = Math.max(4, Math.floor(innerHeight / 40));
+                const maxY = yScale.domain()[1];
+                
+                const tickValues = d3
+                  .ticks(0, Math.sqrt(maxY), tickCount)
+                  .map(d => d * d);
 
-              const tickValues = d3
-                .ticks(0, Math.sqrt(maxY), tickCount)
-                .map(d => d * d);
-
-              d3.select(node).call(
-                d3.axisLeft(yScale)
-                  .tickValues(tickValues)
-                  .tickFormat(d3.format("~s"))
-              );
+                d3.select(node).call(
+                  d3.axisLeft(yScale)
+                    .tickValues(tickValues)
+                    .tickFormat(d3.format("~s"))
+                );
+              }
             }}
           />
 
-          {/* {[...dataByCountry.entries()].map(([country, values]) => (
-            <g key={country}>
-              <path
-                d={line(values)!}
-                fill="none"
-                stroke={colorScale(country)}
-                strokeWidth={2}
-                opacity={0.8}
-              />
-            </g>
-          ))} */}
 
           {[...dataByCountry.entries()].map(([country, values]) => {
               const isSelected = selectedCountry === country;
@@ -165,14 +185,14 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
                     d={line(values)!}
                     fill="none"
                     stroke={colorScale(country)}
-                    strokeWidth={isSelected ? 4 : 2}  // Thicker if selected
+                    strokeWidth={isSelected ? 4 : 2}  
                     opacity={
-                      isSelected ? 1 :           // Full opacity if selected
-                      isOtherCountry ? 0.15 :    // Very dim if another selected
-                      0.8                        // Normal if nothing selected
+                      isSelected ? 1 :          
+                      isOtherCountry ? 0.15 :    
+                      0.8                        
                     }
                     style={{
-                      transition: 'opacity 0.3s, stroke-width 0.3s'  // Smooth transition
+                      transition: 'opacity 0.3s, stroke-width 0.3s'  
                     }}
                   />
                 </g>
@@ -197,7 +217,7 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
             textAnchor="middle"
             fontSize={12}
           >
-            Population
+            {METRIC_LABELS[selectedMetric] || selectedMetric}
           </text>
         </g>
         {/* <g transform={`translate(${width - margin.right + 10}, ${0})`}>
@@ -249,6 +269,16 @@ export default function PopulationLineCharti({ selectedCountry }: PopulationLine
             );
           })}
         </g>
+
+     <text
+        transform="rotate(-90)"
+        x={-innerHeight / 2}
+        y={-46}
+        textAnchor="middle"
+        fontSize={12}
+      >
+        {METRIC_LABELS[selectedMetric] || selectedMetric}
+      </text>
 
       </svg>
     </div>

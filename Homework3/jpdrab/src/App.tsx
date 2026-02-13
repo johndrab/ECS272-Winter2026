@@ -29,6 +29,7 @@ const theme = createTheme({
 // For how Grid works, refer to https://mui.com/material-ui/react-grid/
 function Layout() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedMetric, setSelectedMetric] = useState<string>('population'); 
   
   return (
     <Box
@@ -60,7 +61,7 @@ function Layout() {
           {/* Top Right */}
           <Grid item xs={6} sx={{ width: '100%', height: '50%' }}>
             {/* <StarCoordinates /> */}
-            <Lineplot selectedCountry={selectedCountry}/>
+            <Lineplot selectedCountry={selectedCountry} selectedMetric={selectedMetric}/>
           </Grid>
         </Grid>
 
@@ -71,7 +72,9 @@ function Layout() {
           // sx={{ width: '100%', height: '40%' }}
           sx={{ width: '48%', height: '95%' }}
         >
-          <StarCoordinates selectedCountry={selectedCountry}/>
+          <StarCoordinates selectedCountry={selectedCountry} onAxisSelected={(axisKey) => {
+              // Map axis keys to data column names
+              setSelectedMetric(axisKey || 'population');}}/>
           {/* <Lineplot /> */}
         </Grid>
       </Grid>
