@@ -53,13 +53,13 @@ function Layout() {
           {/* Top Left */}
           <Grid item xs={6} 
               // sx={{ width: '55%', height: '100%' }}
-              sx={{ width: '100%', height: '60%' }}
+              sx={{ width: '100%', height: '50%' }}
               > 
             <Heatmap onCountrySelected={setSelectedCountry}/>
           </Grid>
 
           {/* Top Right */}
-          <Grid item xs={6} sx={{ width: '100%', height: '40%' }}>
+          <Grid item xs={6} sx={{ width: '100%', height: '50%' }}>
             {/* <StarCoordinates /> */}
             <Lineplot selectedCountry={selectedCountry} selectedMetric={selectedMetric}/>
           </Grid>
