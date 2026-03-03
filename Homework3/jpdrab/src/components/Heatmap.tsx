@@ -22,7 +22,7 @@ export default function Example({ onCountrySelected }: FilterProps) {
   const [data, setData] = useState<HeatmapDatum[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<ComponentSize>({ width: 0, height: 0 });
-  const margin: Margin = { top: size.height * 0.13, right: 5, bottom: Math.max(size.height * 0.11, 30), left: 90 };
+  const margin: Margin = { top: size.height * 0.13, right: 5, bottom: Math.max(size.height * 0.18, 60), left: 90 };
   const onResize = useDebounceCallback((size: ComponentSize) => setSize(size), 200);
   const [sortMode, setSortMode] = useState<'alphabetical' | 'continent'>('alphabetical');
 
@@ -120,7 +120,7 @@ function initChart() {
     .call(d3.axisLeft(yScale));
 
   // ---------------- X AXIS ----------------
-  const axisFontScale = d3.scaleLinear().domain([300, 900]).range([3, 12]).clamp(true);
+  const axisFontScale = d3.scaleLinear().domain([300, 900]).range([5, 12]).clamp(true);
   const axisFontSize = axisFontScale(size.width * 0.9);
 
   svg.append('g')
@@ -131,7 +131,8 @@ function initChart() {
     .attr('transform', 'rotate(-35)')
     .style('text-anchor', 'end')
     .attr('dx', '-0.6em')
-    .style('font-size', `${axisFontSize}px`);
+    .style('font-size', `${axisFontSize}px`)
+    .attr('display', (_, i) => size.width < 500 && i % 2 !== 0 ? 'none' : null);
 
   // ---------------- CONTINENT SEPARATORS ----------------
   drawContinentSeparators(svg, countries, continentMap, yScale);
