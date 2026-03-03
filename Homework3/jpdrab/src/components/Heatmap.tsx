@@ -147,7 +147,7 @@ function initChart() {
 
   svg.append('text')
     .attr('x', size.width / 2)
-    .attr('y', size.height)
+    .attr('y', size.height - (margin.bottom / 2))
     .attr('text-anchor', 'middle')
     .style('font-size', '.8rem')
     .text('Year');
